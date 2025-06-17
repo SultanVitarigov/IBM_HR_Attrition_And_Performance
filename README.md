@@ -1,17 +1,31 @@
 # IBM_HR_Attrition_And_Performance
 
-├── README.md              ← Case study summary (like a landing page)
-├── data/                  ← Raw and cleaned datasets (avoid uploading huge files)
-│   └── customer_data.csv
-├── notebooks/             ← Jupyter/Colab notebooks
-│   └── churn_analysis.ipynb
-├── sql/                   ← Any SQL scripts used
-│   └── churn_queries.sql
-├── images/                ← Graphs, charts for README.md
-│   └── churn_chart.png
-├── dashboards/            ← Screenshots or links to Tableau/Power BI
-│   └── churn_dashboard.png
-└── presentation/          ← PDF or slides of findings (optional)
-    └── churn_summary.pdf
+## Problem Statement
+IBM is losing high-performing employees at an alarming rate, and want to identify key reasons contributing to attrition.
 
+## Objective
+To identify who the high-performing employees are, and then also the 3 most contributing factors to their desire to leave the company. Any additional findings - such as particularly high attrition in departments, would also be valuable.
     
+## Dataset
+- Source: [Kaggle - IBM HR Analytics Employee Attrition & Performance] (https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset/data)
+- Records: 1471 | Columns: 35
+- Features: Age, Daily Rate, Education, Job Level, Attrition
+
+## Tools
+- Excel
+- BigQuery
+- R, RStudio, R Markdown
+- Tableau
+- GitHub
+
+## Approach
+
+## Key Insights
+
+## Recommendations
+
+## Files & Navigation
+
+## View the Full Report
+
+## Contact

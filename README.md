@@ -65,17 +65,56 @@ FROM(
 **Attrition Employees: 237**  
 **Attrition Rate: 16.12%**  
 
-With that in mind, it was valuable to check whether there would be marked differences between those leaving and not leaving when it comes to the most obvious metrics.
+It was good to check if there were differences in attrition rate between the 3 departments.
 
+```sql
+SELECT
+  Department,
+  total_employees,
+  attrition_employees,
+  (attrition_employees / total_employees)*100 AS attrition_rate
+FROM(
+  SELECT
+  Department,
+  COUNT(*) AS total_employees,
+  COUNTIF(Attrition = TRUE) AS attrition_employees,
+  FROM `quantum-boulder-456218-j9.hr_employees_attrition.hr_employees`
+  GROUP BY
+    Department
+) AS attrition_stats
+```
+
+**Research & Development: 13.84%**
+**Human Resources: 19.05%**
+**Sales: 20.64%**
+
+With that in mind, it was valuable to check whether there would be marked differences between those leaving and not leaving when it comes to the most obvious metrics. Though we need to understand that job satisfaction and attrition can often have the same causes.
+
+```sql
 SELECT
   Attrition,
-  avg(JobSatisfaction)
+  ROUND(AVG(JobSatisfaction),2)
 FROM `quantum-boulder-456218-j9.hr_employees_attrition.hr_employees`
 GROUP BY
   Attrition
+```
 
+**Average Job Satisfaction for Staying: 2.78**  
+**Average Job Satisfaction for Leaving: 2.47**
 
+I also wanted to check if the years since last promotion influenced whether employees were leaving, I excluded those with the highest job level (5) as that indicates no room for promotion.
 
+```sql
+SELECT
+  ROUND(AVG(CASE WHEN Attrition = FALSE THEN YearsSinceLastPromotion ELSE NULL END),2) AS no_attrition_employees_avg,
+  ROUND(AVG(CASE WHEN Attrition = TRUE THEN YearsSinceLastPromotion ELSE NULL END),2) AS attrition_employees_avg
+FROM `quantum-boulder-456218-j9.hr_employees_attrition.hr_employees`
+WHERE
+  JobLevel != 5
+```
+
+**Average Years Since Last Promotion for Staying: 2.12**
+**Average Years Since Last Promotion for Leaving: 1.83**
 
 ## Key Insights
 

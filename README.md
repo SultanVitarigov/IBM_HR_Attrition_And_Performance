@@ -116,6 +116,57 @@ WHERE
 **Average Years Since Last Promotion for Staying: 2.12**
 **Average Years Since Last Promotion for Leaving: 1.83**
 
+Another issue that can arise in specific work environments are cultural, and I wanted to thus check if age or gender made a marked difference in attrition rate.
+
+```sql
+SELECT
+  Gender,
+  ROUND((attrition_employees / total_employees)*100,2)
+FROM
+  (
+  SELECT
+  Gender,
+  COUNT(*) AS total_employees,
+  COUNTIF(Attrition = true) AS attrition_employees
+FROM `quantum-boulder-456218-j9.hr_employees_attrition.hr_employees`
+  GROUP BY
+    Gender
+  )
+```
+
+**Male Attrition Rate: 17.01%**
+**Female Attrition Rate: 14.8%**
+
+Now the same for age groups - although somewhat arbitrary I beleive the age groups defined are significant in terms of career phases.
+
+```sql
+SELECT
+  age_group,
+  ROUND((attrition_employees / total_employees)*100,2)
+FROM(
+  SELECT 
+  CASE 
+    WHEN age < 30 THEN 'Under 30'
+    WHEN age BETWEEN 30 AND 39 THEN '30–39'
+    WHEN age BETWEEN 40 AND 49 THEN '40–49'
+    ELSE '50 and above'
+  END AS age_group,
+  COUNT(*) AS total_employees,
+  COUNTIF(Attrition = true) AS attrition_employees
+  FROM `quantum-boulder-456218-j9.hr_employees_attrition.hr_employees`
+  GROUP BY age_group
+)
+```
+
+**Under 30 attrition rate: 27.91%**
+**Between 30-39 attrition rate: 14.31%**
+**Between 40-49 attrition rate: 9.74%**
+**50 and above attrition rate: 13.29%**
+
+So far this is the most significant finding, and although attrition rates tend to be higher for younger employees, this deviation is much higher then a company can normally expect.
+
+
+
 ## Key Insights
 
 ## Recommendations

@@ -186,6 +186,102 @@ FROM(
 
 **Attrition rate for over 30s: 12.76%**
 
+For any numeric variables, correlation between attrition rate can be very informative. This had to be done in R.
+
+```r
+install.packages("dplyr")
+install.packages("ggplot2")
+install.packages("tidyr")
+install.packages("gridExtra")
+
+# Required libraries
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(gridExtra)
+
+
+# Function to calculate attrition rate
+calculate_attrition_by_factor <- function(data, variable_name) {
+  data %>%
+    group_by(!!sym(variable_name)) %>%
+    summarise(
+      total_count = n(),
+      attrition_count = sum(Attrition == TRUE),
+      attrition_rate = attrition_count / total_count,
+      avg_value = mean(as.numeric(!!sym(variable_name)))  # Convert to numeric for correlation
+    ) %>%
+    arrange(!!sym(variable_name))
+}
+
+# Modified plotting function for correlation visualization
+create_correlation_plot <- function(data, variable_name) {
+  attrition_data <- calculate_attrition_by_factor(data, variable_name)
+  
+  # Calculate correlation coefficient
+  correlation <- cor(attrition_data$avg_value, attrition_data$attrition_rate)
+  
+  ggplot(attrition_data, aes(x = avg_value, y = attrition_rate)) +
+    geom_point(color = "steelblue", size = 3) +
+    geom_smooth(method = "lm", color = "red", se = TRUE) +
+    labs(
+      title = paste("Correlation:", variable_name, 
+                    "\nr =", round(correlation, 3)),
+      x = variable_name,
+      y = "Attrition Rate"
+    ) +
+    theme_minimal() +
+    scale_y_continuous(labels = scales::percent)
+}
+
+# List of variables to analyze
+variables_to_analyze <- c(
+  "JobSatisfaction",
+  "WorkLifeBalance",
+  "JobLevel",
+  "EnvironmentSatisfaction",
+  "RelationshipSatisfaction",
+  "JobInvolvement",
+  "Education",
+  "PercentSalaryHike",
+  "MonthlyIncome",
+  "YearsSinceLastPromotion"
+)
+
+# Create plots for all variables
+plot_list <- list()
+correlation_results <- data.frame(
+  Variable = character(),
+  Correlation = numeric(),
+  stringsAsFactors = FALSE
+)
+
+for(var in variables_to_analyze) {
+  # Create plot
+  plot_list[[var]] <- create_correlation_plot(attrition_dataset, var)
+  
+  # Calculate and store correlation
+  attrition_data <- calculate_attrition_by_factor(attrition_dataset, var)
+  correlation <- cor(attrition_data$avg_value, attrition_data$attrition_rate)
+  correlation_results <- rbind(correlation_results, 
+                               data.frame(Variable = var, 
+                                          Correlation = correlation))
+}
+
+# Arrange plots in a grid (2 x 5)
+grid.arrange(grobs = plot_list, ncol = 2)
+
+# Print correlation summary
+cat("\nCorrelation Summary:\n")
+print(correlation_results[order(abs(correlation_results$Correlation), 
+                                decreasing = TRUE), ])
+```
+
+The results:
+
+<img width="1019" height="715" alt="IBMCorrelationData" src="https://github.com/user-attachments/assets/71e2f5c3-fed1-4c76-867b-2b1845e95fcb" />
+
+
 ## Key Insights
 
 ## Recommendations

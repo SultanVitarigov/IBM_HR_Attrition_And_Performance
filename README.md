@@ -184,7 +184,7 @@ FROM(
 )
 ```
 
-**Attrition rate for under 30s: 12.76%**
+**Attrition rate for over 30s: 12.76%**
 
 ## Key Insights
 
